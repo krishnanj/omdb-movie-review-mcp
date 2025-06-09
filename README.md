@@ -48,24 +48,6 @@ This MCP server transforms movie review management from basic storage to an **in
 - **Never Repeat Logic** - Automatically excludes already-reviewed movies
 - **Statistical Tracking** - Count unreviewed movies by criteria
 
-### Multi-Language Cinema Support
-**15+ Languages Supported:**
-- **Hindi** (Bollywood classics, contemporary hits)
-- **English** (Hollywood, international English cinema)  
-- **Spanish** (Spain & Latin America)
-- **French** (French cinema classics)
-- **Japanese** (Anime, live-action)
-- **Korean** (K-dramas, Korean cinema)
-- **Chinese** (Mandarin cinema)
-- **German** (German films)
-- **Italian** (Italian cinema)
-- **Russian** (Russian films)
-- **Portuguese** (Brazilian & Portuguese cinema)
-- **Arabic** (Middle Eastern cinema)
-- **Tamil** (South Indian cinema)
-- **Telugu** (South Indian cinema)
-- **Bengali** (Bengali cinema)
-
 ### Beautiful Web Display System
 - **Static HTML Generation** - No server required, works offline
 - **Movie Poster Galleries** - Visual display with IMDb poster images
@@ -185,7 +167,7 @@ imdb-mcp-server/
 
 ### Prerequisites
 
-- **Python 3.9+** 
+- **Python 3.13+** 
 - **Claude Desktop** or **Cursor IDE**
 - **OMDb API Key** (free from [omdbapi.com](http://www.omdbapi.com/apikey.aspx))
 
@@ -194,7 +176,7 @@ imdb-mcp-server/
 ```bash
 # 1. Navigate to workspace
 cd ~/workspace
-git clone <your-repo> imdb-mcp-server
+git clone https://github.com/krishnanj/omdb-movie-review-mcp.git imdb-mcp-server
 cd imdb-mcp-server
 
 # 2. Virtual environment
@@ -363,7 +345,7 @@ open movie_display/index.html
 ### Design Features
 
 - **Responsive Design** - Beautiful on all devices
-- **Modern UI** - Gradient backgrounds, hover effects
+- **Modern UI** - Clean white design, hover effects
 - **Fast Loading** - Static HTML, no server required
 - **Language Navigation** - Quick filtering by language
 - **Statistics** - Overview of your collection
