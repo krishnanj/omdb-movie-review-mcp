@@ -1,4 +1,4 @@
-# 🎬 Movie Review MCP Server - Enhanced Edition
+# 🎬 Movie Review MCP Server - Painless Way To Keep Track of Your Movie Reviews
 
 A comprehensive Model Context Protocol (MCP) server for intelligent movie discussions, review management, and beautiful web displays. Features smart movie discovery, automatic metadata enrichment, and stunning HTML visualizations.
 
