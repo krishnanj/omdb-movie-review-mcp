@@ -1,6 +1,6 @@
 # 🎬 Movie Review MCP Server - Painless Way To Keep Track of Your Movie Reviews
 
-![Movie Review MCP Server Demo](demo_mcp_movie.gif)
+![Movie Review MCP Server Demo](demo_compressed.gif)
 
 *See the Movie Review MCP Server in action - from natural conversation to beautiful web displays*
 
