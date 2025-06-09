@@ -1,5 +1,9 @@
 # 🎬 Movie Review MCP Server - Painless Way To Keep Track of Your Movie Reviews
 
+![Movie Review MCP Server Demo](demo_mcp_movie.gif)
+
+*See the Movie Review MCP Server in action - from natural conversation to beautiful web displays*
+
 A comprehensive Model Context Protocol (MCP) server for intelligent movie discussions, review management, and beautiful web displays. Features smart movie discovery, automatic metadata enrichment, and stunning HTML visualizations.
 
 **Latest Features:**
@@ -9,6 +13,8 @@ A comprehensive Model Context Protocol (MCP) server for intelligent movie discus
 - **Automatic Metadata** - IMDb links, posters, ratings, and cast info
 - **Language Filtering** - Dedicated pages for each language
 - **Never Repeat** - Smart tracking to avoid reviewing same movies
+
+**Important:** Uses OMDb API (not direct IMDb access). All posting to external platforms requires manual copy-paste.
 
 ## Table of Contents
 
