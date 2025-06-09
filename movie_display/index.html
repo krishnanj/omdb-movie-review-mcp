@@ -16,7 +16,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: white;
             min-height: 100vh;
         }
 
@@ -80,14 +80,14 @@
             font-size: 2.5rem;
             text-align: center;
             margin-bottom: 10px;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            color: #4a5568;
+            text-shadow: none;
         }
 
         .section-subtitle {
             text-align: center;
             margin-bottom: 40px;
-            color: rgba(255, 255, 255, 0.9);
+            color: #666;
             font-size: 1.1rem;
         }
 
@@ -204,9 +204,9 @@
 
         .filter-btn {
             padding: 8px 16px;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
             border-radius: 25px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -215,9 +215,9 @@
         }
 
         .filter-btn:hover, .filter-btn.active {
-            background: rgba(255, 255, 255, 0.9);
-            color: #667eea;
-            border-color: white;
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
         }
 
         .footer {
@@ -289,7 +289,7 @@
 
         .no-movies {
             text-align: center;
-            color: rgba(255, 255, 255, 0.8);
+            color: #666;
             font-size: 1.2rem;
             margin: 60px 0;
         }
@@ -330,7 +330,11 @@
         <div class="language-filter">
             <div class="filter-buttons">
                 <a href="index.html" class="filter-btn active">All Movies</a>
-                <!-- Language-specific navigation will be added here -->
+                
+                <a href="index_english.html" class="filter-btn">English</a>
+                
+                <a href="index_hindi.html" class="filter-btn">Hindi</a>
+                
             </div>
         </div>
         
@@ -644,7 +648,7 @@
     </main>
 
     <footer class="footer">
-        <p>Generated on June 09, 2025 at 10:21 PM by Enhanced IMDB MCP Server v2.0.0</p>
+        <p>Generated on June 09, 2025 at 10:25 PM by Enhanced IMDB MCP Server v2.0.0</p>
         <p>Original Language Focus • 7 Movies • Personal Collection</p>
     </footer>
 </body>

@@ -409,7 +409,7 @@ movie_template = Template("""
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: white;
             min-height: 100vh;
         }
 
@@ -473,14 +473,14 @@ movie_template = Template("""
             font-size: 2.5rem;
             text-align: center;
             margin-bottom: 10px;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            color: #4a5568;
+            text-shadow: none;
         }
 
         .section-subtitle {
             text-align: center;
             margin-bottom: 40px;
-            color: rgba(255, 255, 255, 0.9);
+            color: #666;
             font-size: 1.1rem;
         }
 
@@ -597,9 +597,9 @@ movie_template = Template("""
 
         .filter-btn {
             padding: 8px 16px;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: #f7fafc;
+            color: #4a5568;
+            border: 2px solid #e2e8f0;
             border-radius: 25px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -608,9 +608,9 @@ movie_template = Template("""
         }
 
         .filter-btn:hover, .filter-btn.active {
-            background: rgba(255, 255, 255, 0.9);
-            color: #667eea;
-            border-color: white;
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
         }
 
         .footer {
@@ -682,7 +682,7 @@ movie_template = Template("""
 
         .no-movies {
             text-align: center;
-            color: rgba(255, 255, 255, 0.8);
+            color: #666;
             font-size: 1.2rem;
             margin: 60px 0;
         }
@@ -727,7 +727,15 @@ movie_template = Template("""
         <div class="language-filter">
             <div class="filter-buttons">
                 <a href="index.html" class="filter-btn active">All Movies</a>
-                <!-- Language-specific navigation will be added here -->
+                {% for language in available_languages %}
+                <a href="index_{{ language.lower() }}.html" class="filter-btn">{{ language }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="language-filter">
+            <div class="filter-buttons">
+                <a href="index.html" class="filter-btn">← Back to All Movies</a>
             </div>
         </div>
         {% endif %}
@@ -845,6 +853,7 @@ def generate_html_files():
         'total_movies': total_movies,
         'average_rating': avg_rating,
         'is_language_specific': False,
+        'available_languages': sorted([lang for lang in detected_languages if lang != 'Unknown']),
         'generation_date': datetime.now().strftime("%B %d, %Y at %I:%M %p")
     }
     
