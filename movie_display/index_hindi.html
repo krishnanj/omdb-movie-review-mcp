@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎬 My Movie Reviews - Hindi</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .stats {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            color: white;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .filters {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        .filter-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-label {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .language-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .language-link {
+            padding: 8px 15px;
+            border: 2px solid #ddd;
+            border-radius: 20px;
+            background: white;
+            text-decoration: none;
+            color: #333;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .language-link:hover {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+        
+        .language-link.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .movie-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .movie-header {
+            display: flex;
+            padding: 20px;
+            gap: 15px;
+        }
+        
+        .movie-poster {
+            width: 100px;
+            height: 150px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+        
+        .poster-placeholder {
+            width: 100px;
+            height: 150px;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 12px;
+            text-align: center;
+            border-radius: 10px;
+        }
+        
+        .movie-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .movie-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+        
+        .movie-title a {
+            color: #333;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .movie-title a:hover {
+            color: #667eea;
+        }
+        
+        .movie-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .rating-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .my-rating {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .stars {
+            font-size: 1.1rem;
+            color: #ffd700;
+        }
+        
+        .imdb-rating {
+            background: #f5c518;
+            color: #000;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .movie-review {
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+        
+        .review-text {
+            line-height: 1.6;
+            color: #444;
+            font-style: italic;
+        }
+        
+        .review-date {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #999;
+            text-align: right;
+        }
+        
+        .legacy-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff6b6b;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        
+        .language-badge {
+            display: inline-block;
+            background: #e9ecef;
+            color: #495057;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+        }
+        
+        .no-movies {
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            margin: 50px 0;
+        }
+        
+        .imdb-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #f5c518;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        
+        .imdb-link:hover {
+            color: #e6b800;
+        }
+        
+        @media (max-width: 768px) {
+            .movies-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .movie-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .movie-info {
+                align-items: center;
+            }
+            
+            .filter-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 My Movie Reviews</h1>
+            <p>Personal movie collection with ratings and reviews - Hindi</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number">9</div>
+                <div>Total Movies</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">1</div>
+                <div>Rated Movies</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">6.0/10</div>
+                <div>Average Rating ★★★☆☆</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">1</div>
+                <div>Languages</div>
+            </div>
+        </div>
+        
+        <div class="filters">
+            <div class="filter-section">
+                <span class="filter-label">🌐 Filter by Language:</span>
+                <div class="language-links">
+                    
+                    <a href="index.html" class="language-link">
+                        All Languages
+                    </a>
+                    
+                    <a href="index_hindi.html" class="language-link active">
+                        Hindi
+                    </a>
+                    
+                </div>
+            </div>
+        </div>
+        
+        
+        <div class="movies-grid">
+            
+            <div class="movie-card">
+                
+                
+                <div class="movie-header">
+                    
+                    <img src="https://m.media-amazon.com/images/M/MV5BNDdkNTY1MDQtY2I5MC00OTFlLTg5OWQtZWE2YzE5NWFiMDgzXkEyXkFqcGc@._V1_SX300.jpg" alt="Pathaan Poster" class="movie-poster">
+                    
+                    
+                    <div class="movie-info">
+                        <h3 class="movie-title">
+                            
+                            <a href="https://www.imdb.com/title/tt12844910/" target="_blank" title="View on IMDb">
+                                Pathaan
+                                <i class="fas fa-external-link-alt" style="font-size: 0.8rem; color: #999;"></i>
+                            </a>
+                            
+                        </h3>
+                        
+                        <div class="movie-meta">
+                            
+                            <span><strong>📅 Year:</strong> 2023</span>
+                            
+                            
+                            <span><strong>🎬 Director:</strong> Siddharth Anand</span>
+                            
+                            
+                            <span><strong>🎭 Genre:</strong> Action, Adventure, Thriller</span>
+                            
+                        </div>
+                        
+                        <div class="rating-section">
+                            
+                            <span class="my-rating">6/10</span>
+                            <span class="stars">★★★☆☆</span>
+                            
+                            
+                            <span class="imdb-rating">IMDb 5.8</span>
+                            
+                        </div>
+                        
+                        
+                        <div style="margin-top: 5px;">
+                            
+                            
+                            <span class="language-badge">Hindi</span>
+                            
+                        </div>
+                        
+                        
+                        
+                        <div style="margin-top: 10px;">
+                            <a href="https://www.imdb.com/title/tt12844910/" target="_blank" class="imdb-link">
+                                <i class="fab fa-imdb"></i>
+                                View on IMDb
+                            </a>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="movie-review">
+                    <div class="review-text">"Not my movie, too long, cheesy, draggy"</div>
+                    <div class="review-date">Reviewed on June 09, 2025</div>
+                </div>
+            </div>
+            
+        </div>
+        
+    </div>
+</body>
+</html>

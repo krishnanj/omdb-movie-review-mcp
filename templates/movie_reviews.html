@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎬 My Movie Reviews</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .stats {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            color: white;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .filters {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        .filter-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-label {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .language-select {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            background: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .language-select:hover {
+            border-color: #667eea;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+        }
+        
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .movie-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .movie-header {
+            display: flex;
+            padding: 20px;
+            gap: 15px;
+        }
+        
+        .movie-poster {
+            width: 100px;
+            height: 150px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 12px;
+            text-align: center;
+        }
+        
+        .poster-placeholder {
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .movie-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .movie-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+        
+        .movie-title a {
+            color: #333;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .movie-title a:hover {
+            color: #667eea;
+        }
+        
+        .movie-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .rating-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .my-rating {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .stars {
+            font-size: 1.1rem;
+            color: #ffd700;
+        }
+        
+        .imdb-rating {
+            background: #f5c518;
+            color: #000;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .movie-details {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 5px 10px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+        
+        .detail-label {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .movie-review {
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+        
+        .review-text {
+            line-height: 1.6;
+            color: #444;
+            font-style: italic;
+        }
+        
+        .review-date {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #999;
+            text-align: right;
+        }
+        
+        .legacy-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff6b6b;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        
+        .language-badge {
+            display: inline-block;
+            background: #e9ecef;
+            color: #495057;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            margin-right: 5px;
+        }
+        
+        .no-movies {
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            margin: 50px 0;
+        }
+        
+        .imdb-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #f5c518;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+        
+        .imdb-link:hover {
+            color: #e6b800;
+        }
+        
+        @media (max-width: 768px) {
+            .movies-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .movie-header {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .movie-info {
+                align-items: center;
+            }
+            
+            .filter-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 My Movie Reviews</h1>
+            <p>Personal movie collection with ratings and reviews</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number">{{ stats.total_movies }}</div>
+                <div>Total Movies</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ stats.total_rated }}</div>
+                <div>Rated Movies</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ stats.avg_rating }}/10</div>
+                <div>Average Rating {{ stats.avg_stars }}</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">{{ languages|length }}</div>
+                <div>Languages</div>
+            </div>
+        </div>
+        
+        <div class="filters">
+            <div class="filter-section">
+                <span class="filter-label">🌐 Filter by Language:</span>
+                <select class="language-select" onchange="filterByLanguage(this.value)">
+                    <option value="all" {% if selected_language == 'all' %}selected{% endif %}>All Languages</option>
+                    {% for language in languages %}
+                    <option value="{{ language }}" {% if selected_language == language %}selected{% endif %}>
+                        {{ language }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        
+        {% if movies %}
+        <div class="movies-grid">
+            {% for movie in movies %}
+            <div class="movie-card">
+                {% if movie.is_legacy %}
+                <div class="legacy-badge">Legacy</div>
+                {% endif %}
+                
+                <div class="movie-header">
+                    {% if movie.poster_url %}
+                    <img src="{{ movie.poster_url }}" alt="{{ movie.title }} Poster" class="movie-poster">
+                    {% else %}
+                    <div class="movie-poster poster-placeholder">
+                        <i class="fas fa-film" style="font-size: 2rem; margin-bottom: 5px;"></i>
+                        <span>No Poster</span>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="movie-info">
+                        <h3 class="movie-title">
+                            {% if movie.imdb_link %}
+                            <a href="{{ movie.imdb_link }}" target="_blank" title="View on IMDb">
+                                {{ movie.title }}
+                                <i class="fas fa-external-link-alt" style="font-size: 0.8rem; color: #999;"></i>
+                            </a>
+                            {% else %}
+                            {{ movie.title }}
+                            {% endif %}
+                        </h3>
+                        
+                        <div class="movie-meta">
+                            {% if movie.year != "Unknown" %}
+                            <span><strong>📅 Year:</strong> {{ movie.year }}</span>
+                            {% endif %}
+                            {% if movie.director != "Unknown" %}
+                            <span><strong>🎬 Director:</strong> {{ movie.director }}</span>
+                            {% endif %}
+                            {% if movie.genre != "Unknown" %}
+                            <span><strong>🎭 Genre:</strong> {{ movie.genre }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="rating-section">
+                            {% if movie.rating != "N/A" %}
+                            <span class="my-rating">{{ movie.rating }}/10</span>
+                            <span class="stars">{{ movie.stars }}</span>
+                            {% endif %}
+                            {% if movie.imdb_rating != "N/A" %}
+                            <span class="imdb-rating">IMDb {{ movie.imdb_rating }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        {% if movie.language != "Unknown" %}
+                        <div style="margin-top: 5px;">
+                            {% set languages = movie.language.split(',') %}
+                            {% for lang in languages %}
+                            <span class="language-badge">{{ lang.strip() }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        {% if movie.imdb_link %}
+                        <div style="margin-top: 10px;">
+                            <a href="{{ movie.imdb_link }}" target="_blank" class="imdb-link">
+                                <i class="fab fa-imdb"></i>
+                                View on IMDb
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="movie-review">
+                    <div class="review-text">"{{ movie.review }}"</div>
+                    <div class="review-date">Reviewed on {{ movie.date_added }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="no-movies">
+            <p>No movies found for the selected language filter.</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <script>
+        function filterByLanguage(language) {
+            const url = new URL(window.location);
+            if (language === 'all') {
+                url.searchParams.delete('language');
+            } else {
+                url.searchParams.set('language', language);
+            }
+            window.location.href = url.toString();
+        }
+        
+        // Add loading states for images
+        document.addEventListener('DOMContentLoaded', function() {
+            const images = document.querySelectorAll('.movie-poster');
+            images.forEach(img => {
+                img.addEventListener('error', function() {
+                    this.style.display = 'none';
+                    const placeholder = this.nextElementSibling;
+                    if (placeholder && placeholder.classList.contains('poster-placeholder')) {
+                        placeholder.style.display = 'flex';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
