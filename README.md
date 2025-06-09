@@ -2,31 +2,31 @@
 
 A comprehensive Model Context Protocol (MCP) server for intelligent movie discussions, review management, and beautiful web displays. Features smart movie discovery, automatic metadata enrichment, and stunning HTML visualizations.
 
-**🚀 Latest Features:**
-- **🧠 Smart Movie Discussions** - AI-powered movie discovery by language & era
-- **🖼️ Beautiful Web Display** - Generate stunning HTML galleries with posters
-- **🌐 Multi-Language Support** - 15+ languages with intelligent search
-- **📊 Automatic Metadata** - IMDb links, posters, ratings, and cast info
-- **🎯 Language Filtering** - Dedicated pages for each language
-- **⚡ Never Repeat** - Smart tracking to avoid reviewing same movies
+**Latest Features:**
+- **Smart Movie Discussions** - AI-powered movie discovery by language & era
+- **Beautiful Web Display** - Generate stunning HTML galleries with posters
+- **Multi-Language Support** - 15+ languages with intelligent search
+- **Automatic Metadata** - IMDb links, posters, ratings, and cast info
+- **Language Filtering** - Dedicated pages for each language
+- **Never Repeat** - Smart tracking to avoid reviewing same movies
 
-## 📋 Table of Contents
+## Table of Contents
 
-- [🎯 Overview](#overview)
-- [✨ Features](#features)
-- [🏗️ Architecture](#architecture)
-- [📁 Project Structure](#project-structure)
-- [🚀 Installation](#installation)
-- [🛠️ Available Tools](#available-tools)
-- [🧠 Smart Discussion System](#smart-discussion-system)
-- [🌐 Multi-Language Support](#multi-language-support)
-- [🖼️ Web Display Generation](#web-display-generation)
-- [📊 Enhanced Review System](#enhanced-review-system)
-- [📤 Export Functionality](#export-functionality)
-- [🔧 Troubleshooting](#troubleshooting)
-- [🤝 Contributing](#contributing)
+- [Overview](#overview)
+- [Features](#features)
+- [Architecture](#architecture)
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Available Tools](#available-tools)
+- [Smart Discussion System](#smart-discussion-system)
+- [Multi-Language Support](#multi-language-support)
+- [Web Display Generation](#web-display-generation)
+- [Enhanced Review System](#enhanced-review-system)
+- [Export Functionality](#export-functionality)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
 
-## 🎯 Overview
+## Overview
 
 This MCP server transforms movie review management from basic storage to an **intelligent discussion platform**. It combines:
 
@@ -37,18 +37,18 @@ This MCP server transforms movie review management from basic storage to an **in
 - **Multi-Language Cinema Support** with cultural context
 - **Never-Repeat Logic** to track your viewing history
 
-**⚠️ Important:** Uses OMDb API (not direct IMDb access). All posting to external platforms requires manual copy-paste.
+**Important:** Uses OMDb API (not direct IMDb access). All posting to external platforms requires manual copy-paste.
 
-## ✨ Features
+## Features
 
-### 🧠 Intelligent Movie Discovery
+### Intelligent Movie Discovery
 - **Smart Discussion Sessions** - "Let's discuss 2000s Hindi movies"
 - **Language-Aware Search** - Uses actor names and cultural keywords
 - **Era-Based Discovery** - Find movies by decade and year range
 - **Never Repeat Logic** - Automatically excludes already-reviewed movies
 - **Statistical Tracking** - Count unreviewed movies by criteria
 
-### 🌐 Multi-Language Cinema Support
+### Multi-Language Cinema Support
 **15+ Languages Supported:**
 - **Hindi** (Bollywood classics, contemporary hits)
 - **English** (Hollywood, international English cinema)  
@@ -66,7 +66,7 @@ This MCP server transforms movie review management from basic storage to an **in
 - **Telugu** (South Indian cinema)
 - **Bengali** (Bengali cinema)
 
-### 🖼️ Beautiful Web Display System
+### Beautiful Web Display System
 - **Static HTML Generation** - No server required, works offline
 - **Movie Poster Galleries** - Visual display with IMDb poster images
 - **Language Filtering** - Dedicated pages for each language
@@ -74,25 +74,25 @@ This MCP server transforms movie review management from basic storage to an **in
 - **IMDb Integration** - Direct links to movie pages
 - **Statistics Dashboard** - Total movies, average ratings, languages
 
-### 📊 Automatic Metadata Enrichment
+### Automatic Metadata Enrichment
 Every review automatically includes:
-- **📅 Year** - Release year prominently displayed
-- **🌐 Language** - Language(s) prominently displayed
-- **🎬 Director** - Director information
-- **🎭 Genre** - Movie genres
-- **⭐ IMDb Rating** - Official IMDb rating for reference
-- **🖼️ Poster Image** - High-quality movie poster
-- **🔗 IMDb Link** - Direct link to IMDb page
-- **🌍 Country** - Country of origin
+- **Year** - Release year prominently displayed
+- **Language** - Language(s) prominently displayed
+- **Director** - Director information
+- **Genre** - Movie genres
+- **IMDb Rating** - Official IMDb rating for reference
+- **Poster Image** - High-quality movie poster
+- **IMDb Link** - Direct link to IMDb page
+- **Country** - Country of origin
 
-### 🎯 Enhanced Review Management
+### Enhanced Review Management
 - **Quick Rating** - Streamlined rating during discussions
 - **Rich Text Reviews** - Detailed qualitative feedback
-- **Star Visualization** - Beautiful ★★★★★ display
+- **Star Visualization** - Beautiful star display
 - **Statistics & Analytics** - Top movies, averages, trends
 - **Batch Export** - Multiple format support for sharing
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -141,47 +141,47 @@ Every review automatically includes:
 - **Web Generation**: Enhanced JSON → Jinja2 Templates → Static HTML → Beautiful Display
 - **Language Filtering**: Multi-lang JSON → Separated HTML Pages → Navigation Links
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 imdb-mcp-server/
-├── 📄 main.py                      # Enhanced MCP server (1279 lines)
-│   ├── 🧠 Smart movie discovery tools
-│   ├── 🌐 Multi-language support (15+ languages)
-│   ├── 📊 Automatic metadata enrichment
-│   ├── ⚡ Never-repeat logic
-│   └── 🎯 Quick rating system
+├── main.py                      # Enhanced MCP server (1279 lines)
+│   ├── Smart movie discovery tools
+│   ├── Multi-language support (15+ languages)
+│   ├── Automatic metadata enrichment
+│   ├── Never-repeat logic
+│   └── Quick rating system
 │
-├── 📄 generate_movie_display.py    # Static HTML generator (681 lines)
-│   ├── 🖼️ Jinja2 template system
-│   ├── 🌐 Language filtering
-│   ├── 📱 Responsive design
-│   └── ⭐ Beautiful movie cards
+├── generate_movie_display.py    # Static HTML generator (681 lines)
+│   ├── Jinja2 template system
+│   ├── Language filtering
+│   ├── Responsive design
+│   └── Beautiful movie cards
 │
-├── 📄 my_reviews.json             # Enhanced review storage
-│   ├── 📊 Rich metadata per movie
-│   ├── 🖼️ Poster URLs
-│   ├── 🔗 IMDb links
-│   └── 🌐 Language tags
+├── my_reviews.json             # Enhanced review storage
+│   ├── Rich metadata per movie
+│   ├── Poster URLs
+│   ├── IMDb links
+│   └── Language tags
 │
-├── 🗂️ movie_display/              # Generated web files
-│   ├── 📄 index.html             # All movies gallery
-│   ├── 📄 index_hindi.html       # Hindi movies only
-│   ├── 📄 index_english.html     # English movies only
-│   └── 📄 index_[language].html  # Per-language galleries
+├── movie_display/              # Generated web files
+│   ├── index.html             # All movies gallery
+│   ├── index_hindi.html       # Hindi movies only
+│   ├── index_english.html     # English movies only
+│   └── index_[language].html  # Per-language galleries
 │
-├── 📄 movie_reviews_display.py    # Flask version (alternative)
-├── 🗂️ templates/                  # Flask templates
-│   └── 📄 movie_reviews.html     # Flask template file
+├── movie_reviews_display.py    # Flask version (alternative)
+├── templates/                  # Flask templates
+│   └── movie_reviews.html     # Flask template file
 │
-├── 📄 requirements.txt           # Dependencies (includes Jinja2)
-├── 📄 README.md                 # This comprehensive guide
-├── 📄 CLARIFICATIONS.md         # OMDb vs IMDb clarifications
-├── 📄 .env                      # OMDb API key configuration
-└── 📄 .gitignore               # Git ignore patterns
+├── requirements.txt           # Dependencies (includes Jinja2)
+├── README.md                 # This comprehensive guide
+├── CLARIFICATIONS.md         # OMDb vs IMDb clarifications
+├── .env                      # OMDb API key configuration
+└── .gitignore               # Git ignore patterns
 ```
 
-## 🚀 Installation
+## Installation
 
 ### Prerequisites
 
@@ -232,9 +232,9 @@ Edit `~/.config/claude-desktop/claude_desktop_config.json`:
 
 **Restart Claude Desktop** to load the enhanced server.
 
-## 🛠️ Available Tools
+## Available Tools
 
-### 🧠 Smart Discovery Tools
+### Smart Discovery Tools
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
@@ -242,14 +242,14 @@ Edit `~/.config/claude-desktop/claude_desktop_config.json`:
 | `discover_movies_by_criteria()` | `language, year_start, year_end, count` | Find movies by language/era (excludes reviewed) |
 | `get_unreviewed_movies_count()` | `language, year_start, year_end` | Count undiscovered movies |
 
-### ⚡ Quick Review Tools
+### Quick Review Tools
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
 | `quick_rate_movie()` | `title, rating, review` | Streamlined rating during discussions |
 | `write_review()` | `title, rating, review` | Full review with metadata enrichment |
 
-### 📊 Enhanced Review Management
+### Enhanced Review Management
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
@@ -259,7 +259,7 @@ Edit `~/.config/claude-desktop/claude_desktop_config.json`:
 | `delete_review()` | `title` | Delete a movie review |
 | `get_top_rated_movies()` | `limit` | Get highest-rated movies |
 
-### 📤 Export & Display Tools
+### Export & Display Tools
 
 | Tool | Parameters | Description |
 |------|------------|-------------|
@@ -267,7 +267,7 @@ Edit `~/.config/claude-desktop/claude_desktop_config.json`:
 | `export_all_reviews()` | None | Export all reviews with instructions |
 | **Web Display** | `generate_movie_display.py` | Generate beautiful HTML galleries |
 
-## 🧠 Smart Discussion System
+## Smart Discussion System
 
 ### Starting a Discussion Session
 
@@ -293,15 +293,15 @@ Claude: "Great! Let me discover some 2000s Hindi cinema for you..."
 ### Example Session Flow
 
 ```
-🎬 Discovered: "Dil Chahta Hai" (2001)
-⭐ IMDb Rating: 8.1/10
-🎭 Genre: Comedy, Drama, Romance  
-🎬 Director: Farhan Akhtar
+Discovered: "Dil Chahta Hai" (2001)
+IMDb Rating: 8.1/10
+Genre: Comedy, Drama, Romance  
+Director: Farhan Akhtar
 
 Have you watched this movie? If yes, how would you rate it (1-10)?
 ```
 
-## 🌐 Multi-Language Support
+## Multi-Language Support
 
 ### Supported Languages & Search Strategy
 
@@ -325,7 +325,7 @@ Each language uses **culturally relevant keywords** for better discovery:
 - **Era Context** - Understands different cinematic periods per language
 - **Genre Preferences** - Recognizes popular genres per culture
 
-## 🖼️ Web Display Generation
+## Web Display Generation
 
 ### Generated Files
 
@@ -339,15 +339,15 @@ The `generate_movie_display.py` script creates:
 ### Features
 
 ```html
-🎬 Beautiful Movie Cards
-├── 🖼️ Movie Poster Images
-├── ⭐ Star Rating Display (★★★★☆)
-├── 📅 Year Prominently Displayed  
-├── 🌐 Language Badge
-├── 🔗 Direct IMDb Links
-├── 📊 IMDb Rating Reference
-├── 📝 Review Text
-└── 📅 Review Date
+Beautiful Movie Cards
+├── Movie Poster Images
+├── Star Rating Display
+├── Year Prominently Displayed  
+├── Language Badge
+├── Direct IMDb Links
+├── IMDb Rating Reference
+├── Review Text
+└── Review Date
 ```
 
 ### Usage
@@ -362,14 +362,14 @@ open movie_display/index.html
 
 ### Design Features
 
-- **📱 Responsive Design** - Beautiful on all devices
-- **🎨 Modern UI** - Gradient backgrounds, hover effects
-- **⚡ Fast Loading** - Static HTML, no server required
-- **🌐 Language Navigation** - Quick filtering by language
-- **📊 Statistics** - Overview of your collection
-- **🔗 Direct Links** - One-click access to IMDb pages
+- **Responsive Design** - Beautiful on all devices
+- **Modern UI** - Gradient backgrounds, hover effects
+- **Fast Loading** - Static HTML, no server required
+- **Language Navigation** - Quick filtering by language
+- **Statistics** - Overview of your collection
+- **Direct Links** - One-click access to IMDb pages
 
-## 📊 Enhanced Review System
+## Enhanced Review System
 
 ### Rich Metadata Structure
 
@@ -407,14 +407,14 @@ When you write any review, the system automatically:
 
 ### Display Features
 
-- **📅 Year Prominently Displayed** - Always visible in reviews
-- **🌐 Language Prominently Displayed** - Clear language identification
-- **⭐ Star Visualization** - Beautiful ★★★★★ representation
-- **🎬 Director Information** - Filmmaker details
-- **🎭 Genre Tags** - Movie classification
-- **📊 IMDb Rating Reference** - Official rating alongside yours
+- **Year Prominently Displayed** - Always visible in reviews
+- **Language Prominently Displayed** - Clear language identification
+- **Star Visualization** - Beautiful star representation
+- **Director Information** - Filmmaker details
+- **Genre Tags** - Movie classification
+- **IMDb Rating Reference** - Official rating alongside yours
 
-## 📤 Export Functionality
+## Export Functionality
 
 ### Multiple Export Formats
 
@@ -431,9 +431,9 @@ When you write any review, the system automatically:
 - **Batch Export** - All reviews at once
 - **Manual Posting** - Copy-paste instructions included
 
-**⚠️ Important:** All posting to external platforms (IMDb, Letterboxd) must be done manually via copy-paste.
+**Important:** All posting to external platforms (IMDb, Letterboxd) must be done manually via copy-paste.
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -472,15 +472,15 @@ python -c "from main import fetch_movie_metadata; print(fetch_movie_metadata('In
 python generate_movie_display.py
 ```
 
-## 🤝 Contributing
+## Contributing
 
 ### Development Areas
 
-- **🌐 Language Support** - Add more languages and cultural keywords
-- **🎨 Web Design** - Enhance HTML templates and styling
-- **📊 Analytics** - Add more statistical analysis features
-- **🔍 Discovery** - Improve smart movie discovery algorithms
-- **📱 Mobile** - Enhance mobile responsiveness
+- **Language Support** - Add more languages and cultural keywords
+- **Web Design** - Enhance HTML templates and styling
+- **Analytics** - Add more statistical analysis features
+- **Discovery** - Improve smart movie discovery algorithms
+- **Mobile** - Enhance mobile responsiveness
 
 ### Code Guidelines
 
@@ -492,7 +492,7 @@ python generate_movie_display.py
 
 ---
 
-## 🎬 Usage Examples
+## Usage Examples
 
 ### Smart Movie Discussion
 ```
@@ -518,6 +518,6 @@ Open movie_display/index_korean.html
 → View only Korean movies with posters and IMDb links
 ```
 
-**🎉 Happy movie reviewing with intelligence and style! 🎬✨**
+**Happy movie reviewing with intelligence and style!**
 
 *Enhanced MCP server with smart discovery, rich metadata, and beautiful web displays - all while maintaining manual posting requirements for external platforms.* 

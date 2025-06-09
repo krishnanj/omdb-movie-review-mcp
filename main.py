@@ -1,63 +1,48 @@
 #!/usr/bin/env python3
 """
-Enhanced Movie Review MCP Server - A comprehensive Model Context Protocol server for intelligent 
-movie discussions, review management, and beautiful web displays.
+Enhanced IMDB MCP Server v2.0.0 - Intelligent Movie Discussion Platform
 
-🚀 ENHANCED FEATURES:
-- 🧠 Smart Movie Discussions: AI-powered discovery by language & era
-- 🌐 Multi-Language Support: 15+ languages with intelligent search  
-- 📊 Automatic Metadata Enrichment: IMDb links, posters, ratings, cast info
-- 🖼️ Beautiful Web Display: Generate stunning HTML galleries with posters
-- 🎯 Language Filtering: Dedicated pages for each language
-- ⚡ Never Repeat Logic: Smart tracking to avoid reviewing same movies
-- 🎬 Quick Rating System: Streamlined rating during discussions
+A comprehensive Movie Conversation Platform (MCP) server that provides intelligent 
+movie discovery, discussion, and review management with a focus on original language 
+categorization.
 
-CORE CAPABILITIES:
-- Search for movies using the OMDb API (Open Movie Database) - READ ONLY
-- Manage personal movie reviews with rich metadata - LOCAL STORAGE
-- Export reviews in various formats for MANUAL posting to platforms
-- Generate beautiful static HTML displays with movie posters
-- Analyze rating patterns and statistics - LOCAL DATA
-- Smart movie discovery using language-specific keywords and actors
+🎬 Key Features:
+• Smart Movie Discovery: AI-powered discovery by original language and era
+• Original Language Focus: Extracts and categorizes movies by their primary/original language
+• Interactive Discussion Sessions: Natural conversation flow for movie discovery
+• Automatic Metadata Enrichment: IMDb links, posters, ratings, director, genre, etc.
+• Multi-Language Cinema Support: 15+ languages with cultural keywords
+• Beautiful Web Display Generation: Responsive HTML galleries with language filtering
+• Never Repeat Logic: Smart tracking to avoid reviewing same movies twice
+• Quick Rating System: Streamlined rating during discussion sessions
 
-🌐 MULTI-LANGUAGE CINEMA SUPPORT (15+ Languages):
+🌍 Original Language Support:
 Hindi, English, Spanish, French, Japanese, Korean, Chinese, German, Italian, 
-Russian, Portuguese, Arabic, Tamil, Telugu, Bengali
+Russian, Portuguese, Arabic, Tamil, Telugu, Bengali, and more.
 
-🧠 SMART DISCUSSION WORKFLOW:
-1. User: "Let's discuss 2000s Hindi movies"
-2. System: Discovers Hindi cinema from 2000-2010 using cultural keywords
-3. System: Asks if user has watched each movie (excludes already reviewed)
-4. User: Provides ratings and reviews
-5. System: Automatically enriches with metadata (IMDb links, posters, etc.)
-6. System: Stores in enhanced JSON format
-7. Generate: Beautiful HTML galleries with language filtering
+🔧 Smart Discussion Workflow:
+1. "I want to discuss 2000s Hindi movies"
+2. System discovers Hindi movies (original language) from 2000-2009
+3. User rates movies they've watched
+4. Reviews automatically saved with full metadata
+5. Beautiful web galleries generated with language filtering
 
-📊 ENHANCED REVIEW STRUCTURE:
-Each review includes: rating, review text, timestamps, IMDb link, poster URL,
-director, genre, language, country, IMDb rating, year - all automatically fetched
+⚠️ Important: This uses OMDb API (NOT direct IMDb access) and stores reviews 
+locally only. Manual posting required for external platforms.
 
-🖼️ WEB DISPLAY GENERATION:
-- Static HTML files (no server required)
-- Movie poster galleries with responsive design
-- Language-specific filtered pages (index_hindi.html, index_english.html, etc.)
-- Navigation between languages, IMDb integration, statistics dashboard
+Usage Examples:
+• discover_movies_by_criteria("Hindi", 2000, 2009, 10) - Find Hindi movies from 2000s
+• quick_rate_movie("Lagaan", 9, "Epic cricket drama") - Rate during discussions
+• generate_movie_display.py - Create responsive HTML galleries
 
-IMPORTANT LIMITATIONS:
-- Uses OMDb API for movie data (not direct IMDb access)
-- Cannot automatically post to IMDb, Letterboxd, or other platforms
-- All posting to external platforms must be done manually
-- OMDb provides movie metadata but is read-only
+Version 2.0.0 Changes:
+• Original language focus (single language per movie instead of multiple)
+• Enhanced cultural authenticity in movie discovery
+• Cleaner language-based filtering and web display
+• Improved smart discovery with language-specific keywords
 
-ARCHITECTURE:
-    Claude Desktop/Cursor → JSON-RPC → Enhanced MCP Server → OMDb API (read-only)
-                                            ↓
-                                      Enhanced JSON Reviews (read/write)
-                                            ↓
-                                      HTML Display Generator (static files)
-
-Author: Created for intelligent personal movie review management
-Version: 2.0.0 - Enhanced Edition
+Author: Enhanced IMDB MCP Server Development Team
+License: MIT
 """
 
 import os
@@ -190,6 +175,10 @@ def fetch_movie_metadata(title: str) -> Dict[str, str]:
             # Validate poster URL (OMDb sometimes returns "N/A" for missing posters)
             if poster_url == "N/A" or not poster_url:
                 poster_url = ""
+                
+            # Get original language (first language listed)
+            languages = data.get('Language', '').split(',')
+            original_language = languages[0].strip() if languages else ''
             
             return {
                 'imdb_link': imdb_link,
@@ -199,7 +188,7 @@ def fetch_movie_metadata(title: str) -> Dict[str, str]:
                 'director': data.get('Director', ''),
                 'genre': data.get('Genre', ''),
                 'imdb_rating': data.get('imdbRating', ''),
-                'language': data.get('Language', ''),
+                'language': original_language,  # Store only original language
                 'country': data.get('Country', '')
             }
         else:
@@ -288,6 +277,10 @@ def search_movie(title: str) -> str:
         
         # Check if movie was found in OMDb database
         if data.get('Response') == 'True':
+            # Get original language (first language listed)
+            languages = data.get('Language', '').split(',')
+            original_language = languages[0].strip() if languages else 'Unknown'
+            
             # Format comprehensive movie information from OMDb data
             return f"""🎬 **{data.get('Title', 'Unknown')}** ({data.get('Year', 'Unknown')})
 📡 *Data source: OMDb API (Open Movie Database)*
@@ -303,7 +296,7 @@ def search_movie(title: str) -> str:
    • Genre: {data.get('Genre', 'Unknown')}
    • Runtime: {data.get('Runtime', 'Unknown')}  
    • Rated: {data.get('Rated', 'Unknown')}
-   • Language: {data.get('Language', 'Unknown')}
+   • Original Language: {original_language}
    • Country: {data.get('Country', 'Unknown')}
 
 ⭐ **Ratings:**
@@ -331,7 +324,7 @@ def discover_movies_by_criteria(language: str, year_start: int, year_end: int, c
     filtering out movies that have already been reviewed to avoid duplicates.
     
     Args:
-        language (str): Language of movies to discover (e.g., "Hindi", "English", "Spanish", "French")
+        language (str): Original language of movies to discover (e.g., "Hindi", "English", "Spanish", "French")
         year_start (int): Starting year for the search range
         year_end (int): Ending year for the search range  
         count (int): Number of movies to discover (default 10, max 20)
@@ -418,9 +411,12 @@ def discover_movies_by_criteria(language: str, year_start: int, year_end: int, c
                             if detail_response.status_code == 200:
                                 detail_data = detail_response.json()
                                 if detail_data.get('Response') == 'True':
-                                    # Check if language matches (if available)
-                                    movie_language = detail_data.get('Language', '').lower()
-                                    if language.lower() in movie_language or any(lang.lower() in movie_language for lang in [language]):
+                                    # Get original language (first language listed)
+                                    languages = detail_data.get('Language', '').split(',')
+                                    original_language = languages[0].strip() if languages else ''
+                                    
+                                    # Check if original language matches
+                                    if language.lower() == original_language.lower():
                                         discovered_movies.append({
                                             'title': title,
                                             'year': movie_year,
@@ -428,7 +424,7 @@ def discover_movies_by_criteria(language: str, year_start: int, year_end: int, c
                                             'genre': detail_data.get('Genre', 'Unknown'),
                                             'plot': detail_data.get('Plot', 'No plot available'),
                                             'rating': detail_data.get('imdbRating', 'N/A'),
-                                            'language': detail_data.get('Language', 'Unknown')
+                                            'language': original_language
                                         })
                                         
                                         if len(discovered_movies) >= count:
@@ -449,7 +445,7 @@ def discover_movies_by_criteria(language: str, year_start: int, year_end: int, c
         
         if not discovered_movies:
             return f"""🔍 **No new movies found for your criteria:**
-• Language: {language}
+• Original Language: {language}
 • Years: {year_start}-{year_end}
 • Already reviewed: {len(existing_titles)} movies
 
@@ -470,7 +466,7 @@ def discover_movies_by_criteria(language: str, year_start: int, year_end: int, c
    • Director: {movie['director']}
    • Genre: {movie['genre']}
    • IMDb: {movie['rating']}/10
-   • Language: {movie['language']}
+   • Original Language: {movie['language']}
    • Plot: {movie['plot'][:100]}{'...' if len(movie['plot']) > 100 else ''}
 
 """
@@ -479,7 +475,7 @@ def discover_movies_by_criteria(language: str, year_start: int, year_end: int, c
 📊 **Session Status:**
 • Found: {len(discovered_movies)} new movies
 • Already reviewed: {len(existing_titles)} movies total
-• Language: {language}
+• Original Language: {language}
 • Time period: {year_start}-{year_end}
 
 💭 **Next steps:** Let me know which movies you've watched and I'll help you rate them!"""
@@ -506,7 +502,7 @@ Let's discover and discuss movies you've watched! Here's how it works:
 
 📋 **Step 1: Tell me your preferences**
 Please let me know:
-• **Language**: What language movies are you in the mood to discuss? 
+• **Original Language**: What language movies are you in the mood to discuss? 
   (e.g., "Hindi", "English", "Spanish", "French", "Japanese", "Korean", etc.)
 • **Time Period**: What years are you interested in? 
   (e.g., "2000s" for 2000-2009, "1990-2005", "2010-2020", etc.)
@@ -579,7 +575,7 @@ def quick_rate_movie(title: str, rating: int, review: str = "") -> str:
             "director": metadata['director'],
             "genre": metadata['genre'],
             "imdb_rating": metadata['imdb_rating'],
-            "language": metadata['language'],
+            "language": metadata['language'],  # Original language only
             "country": metadata['country']
         }
         
@@ -620,7 +616,7 @@ def quick_rate_movie(title: str, rating: int, review: str = "") -> str:
 
 🎯 **Movie Info:** 
    📅 **Year:** {metadata['year'] if metadata['year'] else 'Unknown'}
-   🌐 **Language:** {metadata['language'] if metadata['language'] else 'Unknown'}
+   🌐 **Original Language:** {metadata['language'] if metadata['language'] else 'Unknown'}
    🎬 **Director:** {metadata['director'] if metadata['director'] else 'Unknown'}
    🎭 **Genre:** {metadata['genre'] if metadata['genre'] else 'Unknown'}
 
@@ -642,7 +638,7 @@ def get_unreviewed_movies_count(language: str = "", year_start: int = 1900, year
     Helpful for understanding the scope of a movie discussion session.
     
     Args:
-        language (str): Optional language filter
+        language (str): Optional original language filter
         year_start (int): Start year for counting
         year_end (int): End year for counting
         
@@ -667,7 +663,7 @@ def get_unreviewed_movies_count(language: str = "", year_start: int = 1900, year
 📚 **Total Reviews:** {reviewed_count} movies
 
 🎭 **Discussion Session Scope:**
-• Language: {language if language else 'Any language'}
+• Original Language: {language if language else 'Any language'}
 • Years: {year_start}-{year_end}
 
 💡 **Ready to discover more movies?** 
@@ -749,7 +745,7 @@ def write_review(title: str, rating: int, review: str) -> str:
             "director": metadata['director'],
             "genre": metadata['genre'],
             "imdb_rating": metadata['imdb_rating'],
-            "language": metadata['language'],
+            "language": metadata['language'],  # Original language only
             "country": metadata['country']
         }
         
