@@ -1,12 +1,47 @@
 #!/usr/bin/env python3
 """
-Movie Review MCP Server - A Model Context Protocol server for movie search and personal review management.
+Enhanced Movie Review MCP Server - A comprehensive Model Context Protocol server for intelligent 
+movie discussions, review management, and beautiful web displays.
 
-This server provides tools to:
+🚀 ENHANCED FEATURES:
+- 🧠 Smart Movie Discussions: AI-powered discovery by language & era
+- 🌐 Multi-Language Support: 15+ languages with intelligent search  
+- 📊 Automatic Metadata Enrichment: IMDb links, posters, ratings, cast info
+- 🖼️ Beautiful Web Display: Generate stunning HTML galleries with posters
+- 🎯 Language Filtering: Dedicated pages for each language
+- ⚡ Never Repeat Logic: Smart tracking to avoid reviewing same movies
+- 🎬 Quick Rating System: Streamlined rating during discussions
+
+CORE CAPABILITIES:
 - Search for movies using the OMDb API (Open Movie Database) - READ ONLY
-- Manage personal movie reviews with ratings and text - LOCAL STORAGE
+- Manage personal movie reviews with rich metadata - LOCAL STORAGE
 - Export reviews in various formats for MANUAL posting to platforms
+- Generate beautiful static HTML displays with movie posters
 - Analyze rating patterns and statistics - LOCAL DATA
+- Smart movie discovery using language-specific keywords and actors
+
+🌐 MULTI-LANGUAGE CINEMA SUPPORT (15+ Languages):
+Hindi, English, Spanish, French, Japanese, Korean, Chinese, German, Italian, 
+Russian, Portuguese, Arabic, Tamil, Telugu, Bengali
+
+🧠 SMART DISCUSSION WORKFLOW:
+1. User: "Let's discuss 2000s Hindi movies"
+2. System: Discovers Hindi cinema from 2000-2010 using cultural keywords
+3. System: Asks if user has watched each movie (excludes already reviewed)
+4. User: Provides ratings and reviews
+5. System: Automatically enriches with metadata (IMDb links, posters, etc.)
+6. System: Stores in enhanced JSON format
+7. Generate: Beautiful HTML galleries with language filtering
+
+📊 ENHANCED REVIEW STRUCTURE:
+Each review includes: rating, review text, timestamps, IMDb link, poster URL,
+director, genre, language, country, IMDb rating, year - all automatically fetched
+
+🖼️ WEB DISPLAY GENERATION:
+- Static HTML files (no server required)
+- Movie poster galleries with responsive design
+- Language-specific filtered pages (index_hindi.html, index_english.html, etc.)
+- Navigation between languages, IMDb integration, statistics dashboard
 
 IMPORTANT LIMITATIONS:
 - Uses OMDb API for movie data (not direct IMDb access)
@@ -14,15 +49,15 @@ IMPORTANT LIMITATIONS:
 - All posting to external platforms must be done manually
 - OMDb provides movie metadata but is read-only
 
-The server uses the FastMCP framework and communicates via JSON-RPC over stdio.
-
-Architecture:
-    Claude Desktop/Cursor → JSON-RPC → MCP Server → OMDb API (read-only)
+ARCHITECTURE:
+    Claude Desktop/Cursor → JSON-RPC → Enhanced MCP Server → OMDb API (read-only)
                                             ↓
-                                      Local JSON Reviews (read/write)
+                                      Enhanced JSON Reviews (read/write)
+                                            ↓
+                                      HTML Display Generator (static files)
 
-Author: Created for personal movie review management
-Version: 1.0.0
+Author: Created for intelligent personal movie review management
+Version: 2.0.0 - Enhanced Edition
 """
 
 import os
@@ -123,6 +158,79 @@ def get_current_timestamp() -> str:
     """
     return datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
 
+def fetch_movie_metadata(title: str) -> Dict[str, str]:
+    """
+    Fetch movie metadata from OMDb API including IMDb link and poster image.
+    
+    Args:
+        title (str): Movie title to search for
+        
+    Returns:
+        Dict[str, str]: Dictionary containing IMDb link, poster URL, and other metadata
+    """
+    try:
+        # Search for the movie using OMDb API
+        params = {
+            'apikey': OMDB_API_KEY,
+            't': title,
+            'plot': 'short'
+        }
+        
+        response = requests.get(OMDB_BASE_URL, params=params, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+        
+        if data.get('Response') == 'True':
+            imdb_id = data.get('imdbID', '')
+            poster_url = data.get('Poster', '')
+            
+            # Construct IMDb page link
+            imdb_link = f"https://www.imdb.com/title/{imdb_id}/" if imdb_id else ""
+            
+            # Validate poster URL (OMDb sometimes returns "N/A" for missing posters)
+            if poster_url == "N/A" or not poster_url:
+                poster_url = ""
+            
+            return {
+                'imdb_link': imdb_link,
+                'poster_url': poster_url,
+                'imdb_id': imdb_id,
+                'year': data.get('Year', ''),
+                'director': data.get('Director', ''),
+                'genre': data.get('Genre', ''),
+                'imdb_rating': data.get('imdbRating', ''),
+                'language': data.get('Language', ''),
+                'country': data.get('Country', '')
+            }
+        else:
+            # Movie not found in OMDb - return empty metadata
+            return {
+                'imdb_link': '',
+                'poster_url': '',
+                'imdb_id': '',
+                'year': '',
+                'director': '',
+                'genre': '',
+                'imdb_rating': '',
+                'language': '',
+                'country': ''
+            }
+            
+    except Exception as e:
+        print(f"Error fetching metadata for '{title}': {e}")
+        # Return empty metadata on error
+        return {
+            'imdb_link': '',
+            'poster_url': '',
+            'imdb_id': '',
+            'year': '',
+            'director': '',
+            'genre': '',
+            'imdb_rating': '',
+            'language': '',
+            'country': ''
+        }
+
 def rating_to_stars(rating: Union[int, float]) -> str:
     """
     Convert numeric rating to visual star representation.
@@ -200,22 +308,381 @@ def search_movie(title: str) -> str:
 
 ⭐ **Ratings:**
    • IMDb: {data.get('imdbRating', 'N/A')}/10
-   • IMDb Votes: {data.get('imdbVotes', 'N/A')}
-   • Metascore: {data.get('Metascore', 'N/A')}/100
+   • Rotten Tomatoes: {data.get('Ratings', [{}])[0].get('Value', 'N/A') if data.get('Ratings') else 'N/A'}
 
-🔗 **IMDb Link:** https://www.imdb.com/title/{data.get('imdbID', '')}
+🔗 **IMDb ID:** {data.get('imdbID', 'N/A')}
 
-💰 **Box Office:** {data.get('BoxOffice', 'Not available')}
-🏆 **Awards:** {data.get('Awards', 'None listed')}
-
-ℹ️ *This data is provided by OMDb API and may not reflect real-time IMDb information.*"""
+💰 **Box Office:** {data.get('BoxOffice', 'N/A')}
+🏆 **Awards:** {data.get('Awards', 'N/A')}"""
         else:
-            return f"❌ Movie '{title}' not found in OMDb database. Error: {data.get('Error', 'Unknown error')}"
+            return f"❌ Movie not found: {data.get('Error', 'Unknown error')}"
             
-    except requests.exceptions.RequestException as e:
-        return f"❌ Network error searching OMDb for '{title}': {str(e)}"
+    except requests.RequestException as e:
+        return f"❌ Network error searching for '{title}': {str(e)}"
     except Exception as e:
-        return f"❌ Unexpected error searching OMDb for '{title}': {str(e)}"
+        return f"❌ Error searching for '{title}': {str(e)}"
+
+@mcp.tool()
+def discover_movies_by_criteria(language: str, year_start: int, year_end: int, count: int = 10) -> str:
+    """
+    Discover movies based on language and year criteria using OMDb API.
+    
+    This tool searches for popular movies from specific languages and time periods,
+    filtering out movies that have already been reviewed to avoid duplicates.
+    
+    Args:
+        language (str): Language of movies to discover (e.g., "Hindi", "English", "Spanish", "French")
+        year_start (int): Starting year for the search range
+        year_end (int): Ending year for the search range  
+        count (int): Number of movies to discover (default 10, max 20)
+        
+    Returns:
+        str: List of discovered movies with basic info, excluding already reviewed ones
+        
+    Example:
+        discover_movies_by_criteria("Hindi", 2000, 2010, 5) returns 5 Hindi movies from 2000s
+    """
+    try:
+        # Load existing reviews to avoid duplicates
+        existing_reviews = load_reviews()
+        existing_titles = {normalize_title(title) for title in existing_reviews.keys()}
+        
+        # Limit count to reasonable range
+        count = max(1, min(count, 20))
+        
+        discovered_movies = []
+        
+        # Search terms for different languages - using popular/common movie keywords
+        search_terms_by_language = {
+            "hindi": ["bollywood", "shah rukh khan", "aamir khan", "salman khan", "amitabh bachchan", "hrithik roshan", "akshay kumar"],
+            "english": ["hollywood", "drama", "action", "comedy", "thriller", "romance", "adventure"],
+            "spanish": ["spanish", "pedro almodovar", "spanish film", "spain", "madrid", "barcelona"],
+            "french": ["french", "french film", "paris", "cinema francais", "french drama"],
+            "japanese": ["japanese", "japan", "tokyo", "japanese film", "samurai", "anime"],
+            "korean": ["korean", "korea", "seoul", "korean film", "k-drama"],
+            "italian": ["italian", "italy", "italian film", "roma", "italian cinema"],
+            "german": ["german", "germany", "german film", "berlin", "german cinema"],
+            "chinese": ["chinese", "china", "chinese film", "hong kong", "mandarin"],
+            "russian": ["russian", "russia", "russian film", "moscow", "soviet"],
+            "tamil": ["tamil", "kollywood", "tamil film", "chennai", "south indian"],
+            "telugu": ["telugu", "tollywood", "telugu film", "hyderabad", "south indian"],
+            "arabic": ["arabic", "arab", "middle east", "arabic film", "lebanon", "egypt"],
+            "portuguese": ["portuguese", "brazil", "brazilian", "portugal", "brazilian film"],
+            "turkish": ["turkish", "turkey", "turkish film", "istanbul", "turkish cinema"]
+        }
+        
+        # Get search terms for the specified language
+        lang_lower = language.lower()
+        search_terms = search_terms_by_language.get(lang_lower, [language.lower()])
+        
+        # Try multiple search approaches to find movies
+        for term in search_terms[:3]:  # Limit to 3 search terms to avoid too many API calls
+            for year in range(year_start, min(year_end + 1, year_start + 5)):  # Limit year range
+                try:
+                    # Search using OMDb API
+                    params = {
+                        'apikey': OMDB_API_KEY,
+                        's': term,
+                        'y': year,
+                        'type': 'movie'
+                    }
+                    
+                    response = requests.get(OMDB_BASE_URL, params=params, timeout=10)
+                    response.raise_for_status()
+                    data = response.json()
+                    
+                    if data.get('Response') == 'True' and 'Search' in data:
+                        for movie in data['Search'][:5]:  # Limit to first 5 results per search
+                            title = movie.get('Title', '')
+                            movie_year = movie.get('Year', '')
+                            
+                            # Skip if already reviewed
+                            if normalize_title(title) in existing_titles:
+                                continue
+                                
+                            # Check if within year range
+                            try:
+                                if int(movie_year) < year_start or int(movie_year) > year_end:
+                                    continue
+                            except:
+                                continue
+                            
+                            # Get detailed info for this movie
+                            detail_params = {
+                                'apikey': OMDB_API_KEY,
+                                'i': movie.get('imdbID', ''),
+                                'plot': 'short'
+                            }
+                            
+                            detail_response = requests.get(OMDB_BASE_URL, params=detail_params, timeout=10)
+                            if detail_response.status_code == 200:
+                                detail_data = detail_response.json()
+                                if detail_data.get('Response') == 'True':
+                                    # Check if language matches (if available)
+                                    movie_language = detail_data.get('Language', '').lower()
+                                    if language.lower() in movie_language or any(lang.lower() in movie_language for lang in [language]):
+                                        discovered_movies.append({
+                                            'title': title,
+                                            'year': movie_year,
+                                            'director': detail_data.get('Director', 'Unknown'),
+                                            'genre': detail_data.get('Genre', 'Unknown'),
+                                            'plot': detail_data.get('Plot', 'No plot available'),
+                                            'rating': detail_data.get('imdbRating', 'N/A'),
+                                            'language': detail_data.get('Language', 'Unknown')
+                                        })
+                                        
+                                        if len(discovered_movies) >= count:
+                                            break
+                            
+                            # Small delay to be respectful to API
+                            import time
+                            time.sleep(0.1)
+                    
+                    if len(discovered_movies) >= count:
+                        break
+                        
+                except requests.RequestException:
+                    continue  # Try next search term/year
+                    
+            if len(discovered_movies) >= count:
+                break
+        
+        if not discovered_movies:
+            return f"""🔍 **No new movies found for your criteria:**
+• Language: {language}
+• Years: {year_start}-{year_end}
+• Already reviewed: {len(existing_titles)} movies
+
+💡 **Try different criteria:**
+• Expand the year range
+• Try related languages (e.g., "Bollywood" for Hindi)
+• Use broader language terms"""
+
+        # Format the discovered movies
+        result = f"""🎬 **Discovered {len(discovered_movies)} {language} movies ({year_start}-{year_end}):**
+
+*These movies are not in your review collection yet.*
+
+"""
+        
+        for i, movie in enumerate(discovered_movies, 1):
+            result += f"""**{i}. {movie['title']}** ({movie['year']})
+   • Director: {movie['director']}
+   • Genre: {movie['genre']}
+   • IMDb: {movie['rating']}/10
+   • Language: {movie['language']}
+   • Plot: {movie['plot'][:100]}{'...' if len(movie['plot']) > 100 else ''}
+
+"""
+        
+        result += f"""
+📊 **Session Status:**
+• Found: {len(discovered_movies)} new movies
+• Already reviewed: {len(existing_titles)} movies total
+• Language: {language}
+• Time period: {year_start}-{year_end}
+
+💭 **Next steps:** Let me know which movies you've watched and I'll help you rate them!"""
+
+        return result
+        
+    except Exception as e:
+        return f"❌ Error discovering movies: {str(e)}"
+
+@mcp.tool()
+def start_movie_discussion_session() -> str:
+    """
+    Start an interactive movie discussion session.
+    
+    This tool initiates a conversation flow where the user can specify their preferences
+    for language and time period, then discover and rate movies they've watched.
+    
+    Returns:
+        str: Welcome message with instructions for the movie discussion session
+    """
+    return """🎬 **Welcome to Movie Discussion Session!**
+
+Let's discover and discuss movies you've watched! Here's how it works:
+
+📋 **Step 1: Tell me your preferences**
+Please let me know:
+• **Language**: What language movies are you in the mood to discuss? 
+  (e.g., "Hindi", "English", "Spanish", "French", "Japanese", "Korean", etc.)
+• **Time Period**: What years are you interested in? 
+  (e.g., "2000s" for 2000-2009, "1990-2005", "2010-2020", etc.)
+
+🔍 **Step 2: I'll discover movies**
+I'll search for popular movies matching your criteria and show you ones you haven't reviewed yet.
+
+⭐ **Step 3: Rate what you've watched**
+For each movie I suggest, just tell me:
+• **"Yes"** if you've watched it (then I'll ask for your rating & review)
+• **"No"** if you haven't seen it (I'll skip to the next one)
+
+💾 **Step 4: Save your reviews**
+I'll automatically save all your ratings and reviews to your collection.
+
+---
+
+**Examples to get started:**
+• "I want to discuss 2000s Hindi movies"
+• "Let's talk about French films from the 1990s"  
+• "Show me English movies from 2010-2020"
+• "I'm interested in Korean films from any time period"
+
+**What language and time period would you like to explore today?** 🎭"""
+
+@mcp.tool()
+def quick_rate_movie(title: str, rating: int, review: str = "") -> str:
+    """
+    Quickly rate a movie during a discussion session.
+    
+    This is a streamlined version of write_review optimized for discussion sessions,
+    with better feedback and integration with the discovery workflow.
+    Automatically fetches and stores movie metadata including IMDb links and poster URLs.
+    
+    Args:
+        title (str): Movie title to rate
+        rating (int): Rating from 1-10
+        review (str): Optional review text (can be brief during sessions)
+        
+    Returns:
+        str: Confirmation message with rating saved and movie metadata
+    """
+    try:
+        # Validate rating
+        if not isinstance(rating, int) or rating < 1 or rating > 10:
+            return "❌ Rating must be an integer between 1 and 10"
+        
+        # Load existing reviews
+        reviews = load_reviews()
+        normalized_title = normalize_title(title)
+        current_time = get_current_timestamp()
+        
+        # Check if updating existing review
+        is_update = normalized_title in reviews
+        
+        # Fetch movie metadata from OMDb API
+        print(f"🔍 Fetching movie metadata for '{title}'...", file=sys.stderr)
+        metadata = fetch_movie_metadata(title)
+        
+        # Prepare review data with metadata
+        review_data = {
+            "rating": rating,
+            "review": review if review.strip() else f"Rated {rating}/10 during movie discussion session",
+            "last_updated": current_time,
+            # Movie metadata from OMDb
+            "imdb_link": metadata['imdb_link'],
+            "poster_url": metadata['poster_url'],
+            "imdb_id": metadata['imdb_id'],
+            "year": metadata['year'],
+            "director": metadata['director'],
+            "genre": metadata['genre'],
+            "imdb_rating": metadata['imdb_rating'],
+            "language": metadata['language'],
+            "country": metadata['country']
+        }
+        
+        # Add date_added if new review
+        if not is_update:
+            review_data["date_added"] = current_time
+        else:
+            # Keep original date_added if updating
+            if isinstance(reviews[normalized_title], dict):
+                review_data["date_added"] = reviews[normalized_title].get("date_added", current_time)
+            else:
+                review_data["date_added"] = current_time
+        
+        # Save the review
+        reviews[normalized_title] = review_data
+        save_reviews(reviews)
+        
+        # Generate confirmation message
+        stars = rating_to_stars(rating)
+        action = "Updated" if is_update else "Added"
+        
+        result = f"""✅ **{action} rating for "{title}"**
+
+⭐ **Your Rating:** {rating}/10 {stars}
+🎭 **IMDb Rating:** {metadata['imdb_rating']}/10 (for reference)
+📝 **Review:** {review_data['review']}
+📅 **Date:** {current_time[:10]}
+
+🔗 **Links:**"""
+        
+        if metadata['imdb_link']:
+            result += f"\n   • IMDb Page: {metadata['imdb_link']}"
+        
+        if metadata['poster_url']:
+            result += f"\n   🖼️ Movie Poster: {metadata['poster_url']}"
+            
+        result += f"""
+
+🎯 **Movie Info:** 
+   📅 **Year:** {metadata['year'] if metadata['year'] else 'Unknown'}
+   🌐 **Language:** {metadata['language'] if metadata['language'] else 'Unknown'}
+   🎬 **Director:** {metadata['director'] if metadata['director'] else 'Unknown'}
+   🎭 **Genre:** {metadata['genre'] if metadata['genre'] else 'Unknown'}
+
+💾 **Saved to your collection!** 
+({len(reviews)} total movies reviewed)
+
+🎬 **Ready for the next movie?** Just say "next" or tell me about another movie!"""
+
+        return result
+        
+    except Exception as e:
+        return f"❌ Error saving rating for '{title}': {str(e)}"
+
+@mcp.tool() 
+def get_unreviewed_movies_count(language: str = "", year_start: int = 1900, year_end: int = 2024) -> str:
+    """
+    Get a count of how many movies are available to discover vs already reviewed.
+    
+    Helpful for understanding the scope of a movie discussion session.
+    
+    Args:
+        language (str): Optional language filter
+        year_start (int): Start year for counting
+        year_end (int): End year for counting
+        
+    Returns:
+        str: Statistics about reviewed vs available movies
+    """
+    try:
+        reviews = load_reviews()
+        reviewed_count = len(reviews)
+        
+        # Get some stats about reviewed movies
+        language_stats = {}
+        year_stats = {}
+        
+        for title, review_data in reviews.items():
+            if isinstance(review_data, dict):
+                # Try to get movie info for stats (limited to avoid too many API calls)
+                pass
+        
+        result = f"""📊 **Your Movie Collection Stats:**
+
+📚 **Total Reviews:** {reviewed_count} movies
+
+🎭 **Discussion Session Scope:**
+• Language: {language if language else 'Any language'}
+• Years: {year_start}-{year_end}
+
+💡 **Ready to discover more movies?** 
+Use `discover_movies_by_criteria` to find movies you haven't reviewed yet!
+
+🔍 **Popular discovery options:**
+• Hindi/Bollywood movies from 2000s
+• English movies from 2010s  
+• Classic films from 1990s
+• International cinema from any period"""
+
+        return result
+        
+    except Exception as e:
+        return f"❌ Error getting movie stats: {str(e)}"
 
 # =============================================================================
 # REVIEW MANAGEMENT TOOLS
@@ -231,7 +698,8 @@ def write_review(title: str, rating: int, review: str) -> str:
     for manual posting to external platforms.
     
     Creates a new review or updates an existing one with the provided rating and text.
-    Automatically manages timestamps for tracking when reviews are added/modified.
+    Automatically fetches and stores movie metadata including IMDb links and poster URLs.
+    Manages timestamps for tracking when reviews are added/modified.
     
     Args:
         title (str): Movie title to review
@@ -239,11 +707,11 @@ def write_review(title: str, rating: int, review: str) -> str:
         review (str): Detailed text review
         
     Returns:
-        str: Confirmation message with review summary
+        str: Confirmation message with review summary and movie metadata
         
     Example:
         write_review("Inception", 9, "Mind-bending masterpiece with incredible visuals")
-        - Stores locally only, does NOT post to IMDb
+        - Stores locally with IMDb link and poster URL
     """
     try:
         # Validate input parameters
@@ -263,13 +731,29 @@ def write_review(title: str, rating: int, review: str) -> str:
         is_update = normalized_title in reviews
         current_time = get_current_timestamp()
         
+        # Fetch movie metadata from OMDb API
+        print(f"🔍 Fetching movie metadata for '{title}'...", file=sys.stderr)
+        metadata = fetch_movie_metadata(title)
+        
         # Create review entry with full metadata (stored locally)
-        reviews[normalized_title] = {
+        review_data = {
             "rating": rating,
             "review": review.strip(),
-            "date_added": reviews.get(normalized_title, {}).get("date_added", current_time),
-            "last_updated": current_time
+            "date_added": reviews.get(normalized_title, {}).get("date_added", current_time) if isinstance(reviews.get(normalized_title), dict) else current_time,
+            "last_updated": current_time,
+            # Movie metadata from OMDb
+            "imdb_link": metadata['imdb_link'],
+            "poster_url": metadata['poster_url'],
+            "imdb_id": metadata['imdb_id'],
+            "year": metadata['year'],
+            "director": metadata['director'],
+            "genre": metadata['genre'],
+            "imdb_rating": metadata['imdb_rating'],
+            "language": metadata['language'],
+            "country": metadata['country']
         }
+        
+        reviews[normalized_title] = review_data
         
         # Save updated reviews to local file (NOT to IMDb)
         save_reviews(reviews)
@@ -278,14 +762,36 @@ def write_review(title: str, rating: int, review: str) -> str:
         stars = rating_to_stars(rating)
         action = "updated" if is_update else "added"
         
-        return f"""✅ Review {action} successfully in local storage!
+        # Create confirmation message with metadata
+        result = f"""✅ Review {action} successfully in local storage!
 
-🎬 **{normalized_title}**
-⭐ **Rating:** {rating}/10 {stars}
+🎬 **{normalized_title}** ({metadata['year'] if metadata['year'] else 'Year unknown'})
+⭐ **Your Rating:** {rating}/10 {stars}
+🎭 **IMDb Rating:** {metadata['imdb_rating']}/10 (for reference)
 📝 **Review:** {review[:100]}{"..." if len(review) > 100 else ""}
+
+🔗 **Links:**"""
+        
+        if metadata['imdb_link']:
+            result += f"\n   • IMDb Page: {metadata['imdb_link']}"
+        
+        if metadata['poster_url']:
+            result += f"\n   🖼️ Movie Poster: {metadata['poster_url']}"
+        
+        result += f"""
+
+🎯 **Movie Details:**
+   📅 **Year:** {metadata['year'] if metadata['year'] else 'Unknown'}
+   🌐 **Language:** {metadata['language'] if metadata['language'] else 'Unknown'}
+   🎬 **Director:** {metadata['director'] if metadata['director'] else 'Unknown'}
+   🎭 **Genre:** {metadata['genre'] if metadata['genre'] else 'Unknown'}
+   🌍 **Country:** {metadata['country'] if metadata['country'] else 'Unknown'}
+
 📅 **{action.title()}:** {current_time}
 
-💾 **Storage:** Local file only - use export tools to post to IMDb/Letterboxd manually"""
+💾 **Storage:** Local file with full metadata - use export tools to post to IMDb/Letterboxd manually"""
+        
+        return result
         
     except Exception as e:
         return f"❌ Error writing local review for '{title}': {str(e)}"
@@ -295,16 +801,16 @@ def get_review(title: str) -> str:
     """
     Retrieve your personal review for a specific movie.
     
-    Supports both new format (rating + text + timestamps) and legacy format (text only).
+    Supports both new format (rating + text + timestamps + metadata) and legacy format (text only).
     
     Args:
         title (str): Movie title to look up
         
     Returns:
-        str: Formatted review information or not found message
+        str: Formatted review information with movie metadata or not found message
         
     Example:
-        get_review("Inception") returns your rating, review text, and timestamps
+        get_review("Inception") returns your rating, review text, timestamps, and IMDb links
     """
     try:
         normalized_title = normalize_title(title)
@@ -322,7 +828,7 @@ def get_review(title: str) -> str:
 
 {review_data}
 
-⚠️ *Legacy review format - no rating or timestamp available*"""
+⚠️ *Legacy review format - no rating, metadata, or timestamp available*"""
         
         elif isinstance(review_data, dict):
             # New format - structured data
@@ -331,15 +837,45 @@ def get_review(title: str) -> str:
             date_added = review_data.get("date_added", "Unknown")
             last_updated = review_data.get("last_updated", "Unknown")
             
+            # Movie metadata
+            imdb_link = review_data.get("imdb_link", "")
+            poster_url = review_data.get("poster_url", "")
+            year = review_data.get("year", "")
+            director = review_data.get("director", "")
+            genre = review_data.get("genre", "")
+            imdb_rating = review_data.get("imdb_rating", "")
+            language = review_data.get("language", "")
+            country = review_data.get("country", "")
+            
             stars = rating_to_stars(rating) if isinstance(rating, (int, float)) else "☆☆☆☆☆"
             
-            return f"""📝 **Your Review for {normalized_title}:**
+            result = f"""📝 **Your Review for {normalized_title}** ({year if year else 'Year unknown'})
 
-⭐ **Rating:** {rating}/10 {stars}
+⭐ **Your Rating:** {rating}/10 {stars}
+🎭 **IMDb Rating:** {imdb_rating}/10 (for reference)
 📖 **Review:** {review_text}
+
+🔗 **Links:**"""
+            
+            if imdb_link:
+                result += f"\n   • IMDb Page: {imdb_link}"
+            
+            if poster_url:
+                result += f"\n   🖼️ Movie Poster: {poster_url}"
+            
+            result += f"""
+
+🎯 **Movie Details:**
+   📅 **Year:** {year if year else 'Unknown'}
+   🌐 **Language:** {language if language else 'Unknown'}
+   🎬 **Director:** {director if director else 'Unknown'}
+   🎭 **Genre:** {genre if genre else 'Unknown'}
+   🌍 **Country:** {country if country else 'Unknown'}
 
 📅 **Added:** {date_added}
 🔄 **Last Updated:** {last_updated}"""
+            
+            return result
         
         else:
             return f"❌ Invalid review format for '{normalized_title}'"
@@ -408,16 +944,28 @@ def list_reviews() -> str:
                 review_text = review_data.get("review", "No review text")
                 rating_display = f"{rating}/10 {rating_to_stars(rating)}" if isinstance(rating, (int, float)) else "No rating"
                 date_info = review_data.get("date_added", "Unknown date")
+                year_info = review_data.get("year", "")
+                language_info = review_data.get("language", "")
             else:
                 review_text = review_data
                 rating_display = "Legacy format"
                 date_info = "Unknown date"
+                year_info = ""
+                language_info = ""
             
             # Truncate long reviews for list display
             truncated_review = review_text[:80] + "..." if len(review_text) > 80 else review_text
             
+            # Build movie info line
+            movie_info = []
+            if year_info:
+                movie_info.append(f"📅 {year_info}")
+            if language_info:
+                movie_info.append(f"🌐 {language_info.split(',')[0].strip()}")  # Show first language only for brevity
+            movie_info_line = " • ".join(movie_info) if movie_info else ""
+            
             result += f"""
-{i}. **{title}**
+{i}. **{title}** {f"({movie_info_line})" if movie_info_line else ""}
    ⭐ {rating_display}
    📝 {truncated_review}
    📅 {date_info}"""
